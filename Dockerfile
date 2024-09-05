@@ -2,7 +2,7 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
 ARG RUBY_VERSION=3.3.1
-FROM ruby:3.3.1-alpine as base
+FROM ruby:$RUBY_VERSION-alpine as base
 
 # Rails app lives here
 WORKDIR /rails
@@ -19,14 +19,20 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apk update && \
-    apk add --no-cache curl libsqlite3-0 libvips || \
-    (echo "Failed to install packages" && exit 1)
+    apk add --no-cache \
+    build-base \
+    git \
+    libvips-dev \
+    sqlite-dev \
+    pkgconfig
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-    bundle exec bootsnap precompile --gemfile
+RUN apk update && \
+apk add --no-cache \
+    curl \
+    libsqlite3-dev \
+    libvips-dev
 
 # Copy application code
 COPY . .
@@ -42,8 +48,9 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 FROM base
 
 # Install packages needed for deployment
-RUN apk update -qq && \
-    apk add --no-cache curl libsqlite3-0 libvips
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl libsqlite3-0 libvips && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
