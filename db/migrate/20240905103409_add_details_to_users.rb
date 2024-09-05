@@ -3,7 +3,5 @@ class AddDetailsToUsers < ActiveRecord::Migration[7.1]
     add_column :users, :firstName, :string
     add_column :users, :lastName, :string
     add_column :users, :birthDay, :date
-    remove_column 
   end
-  
 end
