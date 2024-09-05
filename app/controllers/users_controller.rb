@@ -12,8 +12,8 @@ class UsersController < ApplicationController
     @user = User.new(userInfo)
     if @user.save
       redirect_to users_path
-    else
-      render :new
+      # else
+      #   render :new
     end
   end
 
