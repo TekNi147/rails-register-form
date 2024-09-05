@@ -18,7 +18,9 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apk update && \
-    apk add --no-cache build-base git libvips-dev pkgconfig
+    apk upgrade && \
+    apk add --no-cache build-base git libvips-dev pkgconfig || \
+    (cat /etc/apk/repositories && apk update && apk add --no-cache build-base git libvips-dev pkgconfig)
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
