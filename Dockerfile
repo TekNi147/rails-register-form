@@ -18,8 +18,8 @@ ENV RAILS_ENV="production" \
 FROM base as build
 
 # Install packages needed to build gems
-RUN apk update
-RUN apk add --no-cache build-base git  pkgconfig
+RUN apk update && \
+RUN   apk add --no-cache build-base git libvips-dev pkgconfig
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
