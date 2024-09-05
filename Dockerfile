@@ -13,26 +13,18 @@ ENV RAILS_ENV="production" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
 
-
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
 # Install packages needed to build gems
 RUN apk update && \
-    apk add --no-cache \
-    build-base \
-    git \
-    libvips-dev \
-    sqlite-dev \
-    pkgconfig
+    apk add --no-cache build-base git libvips-dev pkgconfig
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
-RUN apk update && \
-apk add --no-cache \
-    curl \
-    libsqlite3-dev \
-    libvips-dev
+RUN bundle install && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
 
 # Copy application code
 COPY . .
@@ -43,21 +35,20 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-
 # Final stage for app image
 FROM base
 
 # Install packages needed for deployment
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libsqlite3-0 libvips && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+RUN apk update && \
+    apk add --no-cache curl sqlite-libs libvips && \
+    rm -rf /var/cache/apk/*
 
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-home --shell /bin/bash && \
+RUN adduser -D -h /home/rails -s /bin/sh rails && \
     chown -R rails:rails db log storage tmp
 USER rails:rails
 
