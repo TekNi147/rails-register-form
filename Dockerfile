@@ -41,8 +41,9 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 FROM base
 
 # Install packages needed for deployment
-RUN apk update && \
-    rm -rf /var/cache/apk/*
+RUN apk update
+RUN rm -rf /var/cache/apk/*
+RUN apk add --no-cache sqlite-libs
 
 # apt-get update -qq && \
 # apt-get install --no-install-recommends -y curl libsqlite3-0 libvips && \
