@@ -1,13 +1,9 @@
-# syntax = docker/dockerfile:1
-
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
+# Use the official Ruby image from the Alpine repository
 ARG RUBY_VERSION=3.3.1
 FROM ruby:$RUBY_VERSION-alpine as base
 
-# Rails app lives here
-WORKDIR /rails
-
 # Set production environment
+WORKDIR /rails
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
@@ -18,9 +14,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache build-base git libvips-dev pkgconfig || \
-    (cat /etc/apk/repositories && apk update && apk add --no-cache build-base git libvips-dev pkgconfig)
+    apk add --no-cache build-base git libvips-dev pkgconfig
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -42,8 +36,7 @@ FROM base
 
 # Install packages needed for deployment
 RUN apk update && \
-    apk add --no-cache curl sqlite-libs libvips && \
-    rm -rf /var/cache/apk/*
+    apk add --no-cache curl libsqlite3 libvips
 
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
@@ -54,7 +47,7 @@ RUN adduser -D rails && \
     chown -R rails:rails db log storage tmp
 USER rails
 
-# Entrypoint prepares the database.
+# Entrypoint prepares the database
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start the server by default, this can be overwritten at runtime
