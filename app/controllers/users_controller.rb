@@ -22,4 +22,15 @@ class UsersController < ApplicationController
     @user.destroy
     redirect_to users_path
   end
+
+  def edit
+    @user = User.find(params[:id])
+  end
+
+  def update
+    @user = User.find(params[:id])
+    if @user.update(params.require(:user).permit(:name))
+      redirect_to users_path
+    end
+  end
 end

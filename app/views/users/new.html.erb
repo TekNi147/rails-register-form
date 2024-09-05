@@ -1,5 +1,4 @@
-<h1>New User</h1>
-
+<h1>Create User</h1>
 <%= form_with(model: @user, url: register_path) do |form| %>
   <div>
     <%= form.label :name %>
@@ -9,3 +8,5 @@
     <%= form.submit %>
   </div>
 <% end %>
+
+<%= link_to 'View User', users_path %>

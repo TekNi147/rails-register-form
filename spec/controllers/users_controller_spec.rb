@@ -54,4 +54,19 @@ RSpec.describe UsersController, type: :controller do
       expect(response).to redirect_to(users_path)
     end
   end
+
+  describe "GET #edit" do
+    let(:user) { User.create(name: "Old Name") }
+    it("edit user") do
+      user = User.create! valid_attributes
+      get :edit, params: { id: user.to_param }
+      expect(response).to be_successful
+    end
+
+    it("update user") do
+      patch :update, params: { id: user.id, user: { name: "New Name" } }
+      user.reload
+      expect(user.name).to eq("New Name")
+    end
+  end
 end
