@@ -42,7 +42,7 @@ FROM base
 
 # Install packages needed for deployment
 RUN apk update && \
-    apk add --no-cache curl libsqlite3 libvips
+    apk add --no-cache curl libsqlite3 libvips build-base git libvips-dev pkgconfig
 
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
