@@ -2,7 +2,7 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
 ARG RUBY_VERSION=3.3.1
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-alpine as base
+FROM ruby:$RUBY_VERSION-alpine3.15 as base
 
 # Rails app lives here
 WORKDIR /rails
@@ -18,7 +18,7 @@ ENV RAILS_ENV="production" \
 FROM base as build
 
 # Install packages needed to build gems
-RUN apk update -qq && \
+RUN apk update && \
     apk add --no-cache curl libsqlite3-0 libvips || \
     (echo "Failed to install packages" && exit 1)
 
