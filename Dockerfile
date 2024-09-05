@@ -41,9 +41,12 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 FROM base
 
 # Install packages needed for deployment
-RUN apk update && \
-    apk add --no-cache curl sqlite-libs libvips && \
+RUN apk add --no-cache curl sqlite-libs libvips && \
     rm -rf /var/cache/apk/*
+
+    # apt-get update -qq && \
+    # apt-get install --no-install-recommends -y curl libsqlite3-0 libvips && \
+    # rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
