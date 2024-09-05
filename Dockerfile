@@ -42,14 +42,15 @@ FROM base
 
 # Install packages needed for deployment
 RUN apk update && \
-    apk add --no-cache build-base git libvips-dev pkgconfig
+    apk add --no-cache curl sqlite-libs libvips && \
+    rm -rf /var/cache/apk/*
 
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-home --shell /bin/bash && \
+RUN adduser -D -h /home/rails -s /bin/sh rails && \
     chown -R rails:rails db log storage tmp
 USER rails:rails
 
