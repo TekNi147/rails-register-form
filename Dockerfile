@@ -18,8 +18,9 @@ ENV RAILS_ENV="production" \
 FROM base as build
 
 # Install packages needed to build gems
-RUN apk update && \
-    apk add --no-cache build-base git libvips-dev pkgconfig curl sqlite-libs
+RUN apk update -qq && \
+    apk add --no-cache curl libsqlite3-0 libvips || \
+    (echo "Failed to install packages" && exit 1)
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
