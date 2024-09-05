@@ -2,7 +2,7 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
 ARG RUBY_VERSION=3.3.1
-FROM ruby:$RUBY_VERSION-alpine3.15 as base
+FROM ruby:3.3.1-alpine as base
 
 # Rails app lives here
 WORKDIR /rails
