@@ -13,12 +13,11 @@ ENV RAILS_ENV="production" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
 
-
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
 # Install packages needed to build gems
-RUN apk add --no-cache \
+RUN apk update && apk add --no-cache \
     build-base \
     git \
     libvips-dev \
@@ -40,12 +39,11 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-
 # Final stage for app image
 FROM base
 
 # Install packages needed for deployment
-RUN apk add --no-cache \
+RUN apk update && apk add --no-cache \
     curl \
     sqlite-libs \
     libvips
