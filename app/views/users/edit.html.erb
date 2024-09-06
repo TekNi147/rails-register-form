@@ -1,36 +1,56 @@
-<h1>Edit User</h1>
-<%= form_with(model: @user, url: update_user_path) do |form| %>
-  <div>
-    <%= form.label :firstName %>
-    <%= form.text_field :firstName %>
-  </div>
-  <div>
-    <%= form.label :lastName %>
-    <%= form.text_field :lastName %>
-  </div>
-  <div>
-    <%= form.label :birthDay %>
-    <%= form.date_field :birthDay %>
-  </div>
-  <div>
-    <%= form.label :gender, "Select Gender" %><br>
-    <%= form.radio_button :gender, "Male" %>
-    <%= form.label :gender, "Male", value: "Male" %><br>
-    <%= form.radio_button :gender, "Female" %>
-    <%= form.label :gender, "Female", value: "Female" %><br>
-  </div>
-  <div>
-    <%= form.label :email %>
-    <%= form.email_field :email %>
-  </div>
-  <div>
-    <%= form.label :phone %>
-    <%= form.text_field :phone %>
-  </div>
-  <div>
-    <%= form.label :subject %>
-    <%= form.select :subject, options_for_select([["Thailand", "TH"], ["United States", "US"], ["United Kingdom", "UK"]], @user.subject) %>
-  </div>
-  <%= form.submit "Update User" %>
-<% end %>
-<%= link_to 'Back', users_path %>
+<%= stylesheet_link_tag 'new', media: 'all', 'data-turbolinks-track': 'reload' %>
+<section class="center-content"</section>
+  <%= form_with(model: @user, url: update_user_path, html: { class: 'user-form' }) do |form| %>
+    <section class="back-button">
+      <%= link_to '< Back', users_path, class: 'view-user-link' %>
+    </section>
+    <section class="header">
+      <h1>Edit Form</h1>
+    </section>
+    <section class=two-column>
+      <section class="left-column">
+        <%= form.label :firstName, class: 'form-label' %>
+        <%= form.text_field :firstName, class: 'form-control' %>
+      </section>
+      <section class="right-column">
+        <%= form.label :lastName, class: 'form-label' %>
+        <%= form.text_field :lastName, class: 'form-control' %>
+      </section>
+    </section>
+    <section class=two-column>
+      <section class="left-column">
+        <%= form.label :birthDay, class: 'form-label' %>
+        <%= form.date_field :birthDay, class: 'form-control' %>
+      </section>
+      <section class="right-column">
+        <%= form.label :gender, "Gender", class: 'form-label' %>
+        <section class="form-radio-group">
+          <section class="radio-group">
+            <%= form.radio_button :gender, "Male", class: 'form-radio' %>
+            <%= form.label :gender, "Male", value: "Male", class: 'form-radio-label' %>
+          </section>
+          <section class="radio-group">
+            <%= form.radio_button :gender, "Female", class: 'form-radio' %>
+            <%= form.label :gender, "Female", value: "Female", class: 'form-radio-label' %>
+          </section>
+        </section>
+      </section>
+    </section>
+    <section class=two-column>
+      <section class="left-column">
+        <%= form.label :email, class: 'form-label' %>
+        <%= form.email_field :email, class: 'form-control' %>
+      </section>
+      <section class="right-column">
+        <%= form.label :phone, class: 'form-label' %>
+        <%= form.text_field :phone, class: 'form-control' %>
+      </section>
+    </section>
+    <section class="one-column">
+      <%= form.label :subject, class: 'form-label' %>
+      <%= form.select :subject, options_for_select([["HTML"], ["CSS"], ["JavaScript"]], @user.subject), {}, { class: 'form-select' } %>
+    </section>
+    <section class="one-column">
+      <%= form.submit "Update", class: 'form-submit' %>
+    </section>
+  <% end %>
